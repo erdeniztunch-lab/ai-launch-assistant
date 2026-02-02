@@ -206,4 +206,4 @@ This is a prototype. Future improvements:
 
 ---
 
-**Built with:** Gemini 2.0 Flash (free tier) + Claude Sonnet 4.5 + YC Launch ASAP philosophy
+**Built with:** Gemini 3.0 Flash (free tier) + Claude Sonnet 4.5 + YC Launch ASAP philosophy
