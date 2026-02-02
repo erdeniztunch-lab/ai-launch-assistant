@@ -93,12 +93,60 @@ class RateLimiter {
 export const geminiRateLimiter = new RateLimiter();
 
 // ============================================
-// Safe API Call with Rate Limiting
+// Safe API Call with Rate Limiting + Retries
 // ============================================
 
-export async function safeCallGemini(model, prompt, expectJSON = true) {
+// Sleep helper
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Determine whether an error should be treated as transient and retried
+function isTransientError(error) {
+  if (!error) return false;
+  const msg = String(error.message || '').toLowerCase();
+  const code = error.status || error.statusCode || error.code || '';
+
+  if (code === 429 || code === 503) return true;
+  if (msg.includes('overloaded') || msg.includes('rate limit') || msg.includes('timed out') || msg.includes('timeout') || msg.includes('unavailable')) return true;
+
+  return false;
+}
+
+/**
+ * Safe call with rate limiting and retries for transient errors like
+ * "model is overloaded" or HTTP 429/503.
+ *
+ * Options:
+ *  - maxRetries: number (default 5)
+ *  - initialDelay: ms (default 500)
+ *  - factor: exponential factor (default 2)
+ *  - jitter: fraction (0-1) to add randomness (default 0.2)
+ */
+export async function safeCallGemini(model, prompt, expectJSON = true, options = {}) {
+  const { maxRetries = 5, initialDelay = 500, factor = 2, jitter = 0.2 } = options;
   await geminiRateLimiter.waitIfNeeded();
-  return callGemini(model, prompt, expectJSON);
+
+  let attempt = 0;
+  while (true) {
+    try {
+      attempt++;
+      return await callGemini(model, prompt, expectJSON);
+    } catch (error) {
+      // If not transient or max attempts exhausted, rethrow
+      if (attempt > maxRetries || !isTransientError(error)) {
+        console.error(`Gemini failed after ${attempt} attempt(s):`, error);
+        throw error;
+      }
+
+      const baseDelay = initialDelay * Math.pow(factor, attempt - 1);
+      const jitterMs = Math.floor(baseDelay * (Math.random() * jitter));
+      const delay = Math.floor(baseDelay + jitterMs);
+
+      console.warn(`Transient Gemini error (attempt ${attempt}/${maxRetries}). Retrying in ${delay}ms...`, error.message);
+      await sleep(delay);
+    }
+  }
 }
 
 // ============================================
