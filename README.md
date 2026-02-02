@@ -9,6 +9,8 @@ This is the **prompt engineering foundation** for LaunchFast AI - a GTM launch e
 **Not included yet:** Full app UI, database, authentication  
 **Included now:** Core AI logic that makes the product work
 
+**Repository status:** All source UI strings were translated to English in the repository. Files updated: `src/components/ContextForm.js`, `src/app/api/generate-hypothesis/route.js`, `tests/test-prompts.js`. Note: some build artifacts or dev logs under `.next` may still contain the original Turkish text until you remove `.next` and restart the dev server (see Quick Start).
+
 ## 🧠 Philosophy
 
 Based on YC's Launch ASAP principles:
@@ -31,11 +33,29 @@ Based on YC's Launch ASAP principles:
 # Install dependencies
 npm install
 
-# Set your API key
+# Set your API key (macOS / Linux)
 export GEMINI_API_KEY='your-key-here'
+
+# Set your API key (PowerShell - temporary for this session)
+$Env:GEMINI_API_KEY = 'your-key-here'
+
+# Set your API key (PowerShell - persistent)
+setx GEMINI_API_KEY 'your-key-here'
 
 # Run full test flow
 npm test
+```
+
+### 3. Run Dev Server (Windows / macOS / Linux)
+
+If you see untranslated text coming from previous builds (e.g., in `.next`), delete the `.next` folder and restart the dev server to regenerate assets in English:
+
+```powershell
+# Remove previous build artifacts (PowerShell)
+Remove-Item -Recurse -Force .next
+
+# Start dev server
+npm run dev
 ```
 
 ## 📁 File Structure
@@ -184,10 +204,6 @@ This is a prototype. Future improvements:
 - [ ] Revenue-first launch templates
 - [ ] Channel-specific playbooks
 
-## 📝 License
-
-MIT - use however you want for your GTM engineer interviews! 🚀
-
 ---
 
-**Built with:** Gemini 2.0 Flash (free tier) + YC Launch ASAP philosophy
+**Built with:** Gemini 2.0 Flash (free tier) + Claude Sonnet 4.5 + YC Launch ASAP philosophy
