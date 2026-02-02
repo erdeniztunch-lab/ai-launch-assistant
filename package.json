@@ -1,0 +1,38 @@
+{
+  "name": "launchfast-ai",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "LaunchFast AI - Gemini prompt prototypes for GTM launch engine",
+  "main": "src/lib/prompts.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "node --env-file=.env.local tests/test-prompts.js",
+    "test:watch": "node --watch --env-file=.env.local tests/test-prompts.js"
+  },
+  "keywords": [
+    "gemini",
+    "ai",
+    "startup",
+    "gtm",
+    "launch",
+    "yc"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "dotenv": "^16.4.5",
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.24",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.6",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.1"
+  }
+}
